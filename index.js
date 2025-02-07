@@ -4,12 +4,14 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import traderRouter from './routes/tradersRoute.js';
 
+import truckRouter from './routes/truckRoute.js';
 const app = express();
 app.use(express.json());
 
 app.use(cors());
 
 app.use('/traders', traderRouter)
+app.use('/trucks', truckRouter)
 
 mongoose.connect(mongoDBURL)
 .then(() => {
