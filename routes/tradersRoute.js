@@ -104,14 +104,14 @@ router.delete('/:id', async (request,response) => {
 
 // Route to get sum of remainingTaka by truckNo and specific month
 
-router.get('/remainingTaka/:truckNo/:month', async (request,response) => {
+router.get('/remainingTaka/:truckNo/:month/:year', async (request,response) => {
     try{
-        const {truckNo, month} = request.params;
+        const {truckNo, month, year} = request.params;
         const traders = await Trader.find({truckNo:truckNo});
         console.log(traders);
         let sum = 0;
         traders.forEach(trader => {
-            if(trader.date.split('/')[1] === month){
+            if(trader.date.split('/')[1] === month && trader.date.split('/')[2] === year){
                 sum += trader.remainingTaka;
             }
         });
@@ -127,13 +127,13 @@ router.get('/remainingTaka/:truckNo/:month', async (request,response) => {
 
 // route to get sum of remaining taka by the end of the month
 
-router.get('/remainingTaka/:month', async (request,response) => {
+router.get('/remainingTaka/:month/:year', async (request,response) => {
     try{
-        const {month} = request.params;
+        const {month,year} = request.params;
         const traders = await Trader.find({});
         let sum = 0;
         traders.forEach(trader => {
-            if(trader.date.split('/')[1] === month){
+            if(trader.date.split('/')[1] === month && trader.date.split('/')[2] === year){
                 sum += trader.remainingTaka;
             }
         });
