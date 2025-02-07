@@ -104,26 +104,53 @@ router.delete('/:id', async (request,response) => {
 
 // Route to get sum of remainingTaka by truckNo and specific month
 
-router.get('/remainingTaka/:truckNo/:month/:year', async (request,response) => {
-    try{
-        const {truckNo, month, year} = request.params;
-        const traders = await Trader.find({truckNo:truckNo});
-        console.log(traders);
+// router.get('/remainingTaka/:truckNo/:month/:year', async (request,response) => {
+//     try{
+//         const {truckNo, month, year} = request.params;
+//         const traders = await Trader.find({truckNo:truckNo});
+//         console.log(traders);
+//         let sum = 0;
+//         traders.forEach(trader => {
+//             if(trader.date.split('/')[1] === month && trader.date.split('/')[2] === year){
+//                 sum += trader.remainingTaka;
+//             }
+//         });
+//         return response.status(200).send({
+//             truckNo: truckNo,
+//             total: sum
+//         });
+//     }
+//     catch(error){
+//         console.log(error);
+//     }
+// })
+
+router.get('/remainingTaka/:truckNo/:month/:year', async (request, response) => {
+    try {
+        const { truckNo, month, year } = request.params;
+        const traders = await Trader.find({ truckNo: truckNo });
+
         let sum = 0;
-        traders.forEach(trader => {
-            if(trader.date.split('/')[1] === month && trader.date.split('/')[2] === year){
+        const filteredData = traders.filter(trader => {
+            const [day, traderMonth, traderYear] = trader.date.split('/');
+            if (traderMonth === month && traderYear === year) {
                 sum += trader.remainingTaka;
+                return true;
             }
+            return false;
         });
+
         return response.status(200).send({
-            truckNo: truckNo,
-            total: sum
+            total: sum,
+            data: filteredData
+            
         });
-    }
-    catch(error){
+    } catch (error) {
         console.log(error);
+        return response.status(500).send({ error: 'Internal Server Error' });
     }
-})
+});
+
 
 // route to get sum of remaining taka by the end of the month
 
@@ -132,13 +159,17 @@ router.get('/remainingTaka/:month/:year', async (request,response) => {
         const {month,year} = request.params;
         const traders = await Trader.find({});
         let sum = 0;
-        traders.forEach(trader => {
-            if(trader.date.split('/')[1] === month && trader.date.split('/')[2] === year){
+        const filteredData = traders.filter(trader => {
+            const [day, traderMonth, traderYear] = trader.date.split('/');
+            if (traderMonth === month && traderYear === year) {
                 sum += trader.remainingTaka;
+                return true;
             }
+            return false;
         });
         return response.status(200).send({
-            total: sum
+            total: sum,
+            data: filteredData
         });
     }
     catch(error){
