@@ -128,21 +128,28 @@ router.delete('/:id', async (request,response) => {
 router.get('/remainingTaka/:truckNo/:month/:year', async (request, response) => {
     try {
         const { truckNo, month, year } = request.params;
-        const traders = await Trader.find({ truckNo: truckNo });
+        const decodedTruckNo = decodeURIComponent(truckNo);
 
+        const traders = await Trader.find({ truckNo: decodedTruckNo });
+        
+        
         let sum = 0;
+        let tranSum = 0;
         const filteredData = traders.filter(trader => {
-            const [day, traderMonth, traderYear] = trader.date.split('/');
+            const [traderYear, traderMonth, day] = trader.date.split('-');
             if (traderMonth === month && traderYear === year) {
+                tranSum += trader.transportCost;
                 sum += trader.remainingTaka;
                 return true;
             }
             return false;
         });
-
+        
         return response.status(200).send({
             total: sum,
+            transportCost: tranSum,
             data: filteredData
+            
             
         });
     } catch (error) {
@@ -159,9 +166,11 @@ router.get('/remainingTaka/:month/:year', async (request,response) => {
         const {month,year} = request.params;
         const traders = await Trader.find({});
         let sum = 0;
+        let tranSum = 0;
         const filteredData = traders.filter(trader => {
-            const [day, traderMonth, traderYear] = trader.date.split('/');
+            const [traderYear, traderMonth, day] = trader.date.split('-');
             if (traderMonth === month && traderYear === year) {
+                tranSum += trader.transportCost;
                 sum += trader.remainingTaka;
                 return true;
             }
@@ -169,6 +178,7 @@ router.get('/remainingTaka/:month/:year', async (request,response) => {
         });
         return response.status(200).send({
             total: sum,
+            transportCost: tranSum,
             data: filteredData
         });
     }
