@@ -24,6 +24,7 @@ router.post('/', async (request,response) => {
             labourGratuity:request.body.labourGratuity,
             toll:request.body.toll,
             transportCost:request.body.transportCost,
+            transportCostDescription: request.body.transportCostDescription,
             remainingTaka:request.body.remainingTaka
         }
         const trader = await Trader.create(newTrader);
@@ -75,7 +76,7 @@ router.put('/:id', async (request,response) => {
         }
         const {id} = request.params;
 
-        const result = await Trader.findByIdAndUpdate(id, request.body);
+        const result = await Trader.findByIdAndUpdate(id, request.body,{ new: true });
         if (!result) {
             return response.status(404).send({message:'data not found'});
         }

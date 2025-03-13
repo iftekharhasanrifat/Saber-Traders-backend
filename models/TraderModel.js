@@ -46,6 +46,10 @@ const traderSchema = mongoose.Schema(
             type:Number,
             required:false
         },
+        transportCostDescription: {  // New Field Added
+            type: String,
+            required: false
+        },
         remainingTaka:{
             type:Number,
             required:true
