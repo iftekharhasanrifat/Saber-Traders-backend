@@ -205,6 +205,8 @@ router.get('/remainingTaka/:truckNo/:startDate/:endDate', async (req, res) => {
         
         let sum = 0;
         let tranSum = 0;
+        let fuelSum = 0;
+        let takaSum = 0;
         
         // Filter traders whose date falls between start and end (inclusive)
         const filteredData = traders.filter(trader => {
@@ -215,6 +217,8 @@ router.get('/remainingTaka/:truckNo/:startDate/:endDate', async (req, res) => {
             if (traderDate >= start && traderDate <= end) {
                 sum += trader.remainingTaka;
                 tranSum += trader.transportCost;
+                fuelSum += trader.fuelExpense;
+                takaSum += trader.taka;
                 return true;
             }
             return false;
@@ -223,6 +227,8 @@ router.get('/remainingTaka/:truckNo/:startDate/:endDate', async (req, res) => {
         return res.status(200).send({
             total: sum,
             transportCost: tranSum,
+            fuelCost : fuelSum,
+            totalTaka : takaSum,
             data: filteredData
         });
     } catch (error) {
@@ -249,6 +255,8 @@ router.get('/remainingTaka/:startDate/:endDate', async (req, res) => {
         const traders = await Trader.find({ });
         let sum = 0;
         let tranSum = 0;
+        let fuelSum = 0;
+        let takaSum = 0;
         // Filter traders whose date falls between the start and end dates (inclusive)
         const filteredData = traders.filter(trader => {
             const [year, month, day] = trader.date.split('-');
@@ -256,6 +264,8 @@ router.get('/remainingTaka/:startDate/:endDate', async (req, res) => {
             if (traderDate >= start && traderDate <= end) {
                 sum += trader.remainingTaka;
                 tranSum += trader.transportCost;
+                fuelSum += trader.fuelExpense;
+                takaSum += trader.taka;
                 return true;
             }
             return false;
@@ -264,6 +274,8 @@ router.get('/remainingTaka/:startDate/:endDate', async (req, res) => {
         return res.status(200).send({
             total: sum,
             transportCost: tranSum,
+            fuelCost : fuelSum,
+            totalTaka : takaSum,
             data: filteredData
         });
     } catch (error) {
